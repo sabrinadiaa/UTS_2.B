@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Bahan Makanan</title>
+</head>
+<body>
+
+    <h2>Form Data Bahan Makanan</h2>
+
+    <form id="formBahan">
+
+        <label>Nama Bahan</label><br>
+        <input type="text" id="nama_bahan" required>
+        <br><br>
+
+        <label>Kategori</label><br>
+        <select id="kategori" required>
+            <option value="">Pilih Kategori</option>
+            <option value="protein">Protein</option>
+            <option value="karbo">Karbohidrat</option>
+            <option value="sayur">Sayur</option>
+            <option value="buah">Buah</option>
+            <option value="lainnya">Lainnya</option>
+        </select>
+        <br><br>
+
+        <label>Satuan</label><br>
+        <select id="satuan" required>
+            <option value="">Pilih Satuan</option>
+            <option value="gram">Gram</option>
+            <option value="kg">Kg</option>
+            <option value="liter">Liter</option>
+        </select>
+        <br><br>
+
+        <label>Harga per Satuan</label><br>
+        <input type="number" id="harga" min="0" step="0.01" required>
+        <br><br>
+
+        <button type="submit">Simpan Data</button>
+
+    </form>
+
+    <p id="pesan"></p>
+
+    <script>
+        document.getElementById("formBahan")
+        .addEventListener("submit", async function(e) {
+
+            e.preventDefault();
+
+            const data = {
+                nama_bahan: document.getElementById("nama_bahan").value,
+                kategori: document.getElementById("kategori").value,
+                satuan: document.getElementById("satuan").value,
+                harga_per_satuan: document.getElementById("harga").value
+            };
+
+            try {
+                const response = await fetch("/api/bahan", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const hasil = await response.json();
+
+                document.getElementById("pesan").innerText =
+                    hasil.message;
+
+                if (response.ok) {
+                    document.getElementById("formBahan").reset();
+                }
+
+            } catch (error) {
+                document.getElementById("pesan").innerText =
+                    "Terjadi kesalahan saat menyimpan data.";
+            }
+        });
+    </script>
+
+</body>
+</html>
